@@ -1,22 +1,17 @@
 const express = require('express');
 const path = require('path');
-
-
 const app = express();
 const PORT = 3000;
+
 app.use(express.static(__dirname));
+app.set('view engine', 'ejs');
 
-// Serve main HTML file for all routes (for SPA)
-app.get('*', (req, res) => {
-    res.sendFile(path.join(__dirname, 'index.html'));
-});
-
-// Keep-alive endpoint for Render
+// Keep-alive endpoint for Render - MUST COME BEFORE '*'
 app.get('/ping', (req, res) => {
     res.status(200).send('OK');
 });
 
-// Health check endpoint for UptimeRobot
+// Health check endpoint for UptimeRobot - MUST COME BEFORE '*'
 app.get('/health', (req, res) => {
     res.status(200).json({
         status: 'healthy',
@@ -26,11 +21,12 @@ app.get('/health', (req, res) => {
         version: process.version
     });
 });
-app.set('view engine', 'ejs');
 
+// Home route - MUST COME BEFORE '*'
 app.get('/', (req, res) => {
     res.render('home');
 });
+
 
 
 app.listen(PORT, () => {
